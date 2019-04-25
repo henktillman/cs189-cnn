@@ -49,7 +49,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 
 # Parameters for data loader
 params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
-          'shuffle': True,
+          'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
           'num_workers': 2
           }
 
@@ -202,7 +202,6 @@ for epoch in range(num_epochs):
             # if i > 16:
             #     break
     # validate, check against previous accuracy. If it is better, thenn save this model.
-    pdb.set_trace()
     with torch.no_grad():
         correct = 0
         total = 0
@@ -220,13 +219,20 @@ for epoch in range(num_epochs):
             correct += (predicted == local_labels).sum().item()
 
         print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
-        pdb.set_trace()
         acc = correct / total
         val_data_list.append(acc)
         if acc > highest_acc:
             print('improvement')
             highest_acc = acc
             torch.save(model.state_dict(), 'ratchet.ckpt')
+
+# print data arrays
+with open('loss.txt', 'w') as f:
+    for item in loss_data_list:
+        f.write("%s, " % item)
+with open('val.txt', 'w') as f:
+    for item in val_data_list:
+        f.write("%s, " % item)
 
 end = time.time()
 print('Time: {}'.format(end - start))
