@@ -186,7 +186,7 @@ for epoch in range(num_epochs):
         # NOTE: if you use Google Colab's tensorboard-like feature to visualize
         #       the loss, you do not need to plot it here. just take a screenshot
         #       of the loss curve and include it in your write-up.
-        # loss_list = ..
+        pdb.set_trace()
 
         # Backward and optimize
         optimizer.zero_grad()
@@ -241,5 +241,5 @@ if not is_key_frame:
     pass
 
 # Save the model checkpoint
-if not is_train:
+if is_train:
     torch.save(model.state_dict(), 'model.ckpt')
