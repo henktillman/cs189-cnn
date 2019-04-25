@@ -50,11 +50,11 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 # Parameters for data loader
 params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True,
-          'num_workers': 4
+          'num_workers': 2
           }
 
 # TODO: Hyper-parameters
-num_epochs = 3
+num_epochs = 20
 learning_rate = 1e-4
 # NOTE: depending on your optimizer, you may want to tune other hyperparameters as well
 
@@ -127,14 +127,14 @@ class NeuralNet(nn.Module):
                 nn.MaxPool2d(kernel_size=3, stride=2),
                 nn.Conv2d(64, 192, kernel_size=5, padding=2),
                 nn.ReLU(inplace=True),
-                nn.AvgPool2d(kernel_size=3, stride=2),
+                nn.MaxPool2d(kernel_size=3, stride=2),
                 nn.Conv2d(192, 384, kernel_size=3, padding=1),
                 nn.ReLU(inplace=True),
                 nn.Conv2d(384, 256, kernel_size=3, padding=1),
                 nn.ReLU(inplace=True),
                 nn.Conv2d(256, 256, kernel_size=3, padding=1),
                 nn.ReLU(inplace=True),
-                nn.AvgPool2d(kernel_size=3, stride=2),
+                nn.MaxPool2d(kernel_size=3, stride=2),
                 )
         self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
         self.classifier = nn.Sequential(
@@ -144,10 +144,7 @@ class NeuralNet(nn.Module):
                 nn.Dropout(),
                 nn.Linear(4096, 2048),
                 nn.ReLU(inplace=True),
-                nn.Dropout(),
-                nn.Linear(2048, 1024),
-                nn.ReLU(inplace=True),
-                nn.Linear(1024, num_classes),
+                nn.Linear(2048, num_classes),
                 )
     def forward(self, x):
         x = self.features(x)
