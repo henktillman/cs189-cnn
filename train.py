@@ -268,8 +268,8 @@ print('Time: {}'.format(end - start))
 
 # view the per-movement accuracy
 label_map = ['reach','squat','inline','lunge','hamstrings','stretch','deadbug','pushup']
-for id in range(len(label_map)):
-    print('{}: {}'.format(label_map[id],sum([p and g for (p,g) in zip(np.array(pl)==np.array(gt),np.array(gt)==id)])/(sum(np.array(gt)==id)+0.)))
+# for id in range(len(label_map)):
+#     print('{}: {}'.format(label_map[id],sum([p and g for (p,g) in zip(np.array(pl)==np.array(gt),np.array(gt)==id)])/(sum(np.array(gt)==id)+0.)))
 
 # TODO: you'll need to run the forward pass on the kaggle competition images, and save those results to a csv file.
 if not is_key_frame:
