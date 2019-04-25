@@ -50,11 +50,11 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 # Parameters for data loader
 params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True,
-          'num_workers': 2
+          'num_workers': 4
           }
 
 # TODO: Hyper-parameters
-num_epochs = 5
+num_epochs = 3
 learning_rate = 1e-4
 # NOTE: depending on your optimizer, you may want to tune other hyperparameters as well
 
