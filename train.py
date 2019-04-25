@@ -146,7 +146,7 @@ class NeuralNet(nn.Module):
                 nn.ReLU(inplace=True),
                 nn.Dropout(),
                 nn.Linear(2048, 1024),
-                nn.ReLU(inplace=True)
+                nn.ReLU(inplace=True),
                 nn.Linear(1024, num_classes),
                 )
     def forward(self, x):
