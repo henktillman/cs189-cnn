@@ -37,7 +37,7 @@ def default_loader(path):
         return pil_loader(path)
 
 # flag for whether you're training or not
-is_train = False
+is_train = True
 is_key_frame = False # TODO: set this to false to train on the video frames, instead of the key frames
 model_to_load = 'alex2.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
 
