@@ -14,8 +14,7 @@ class Mds189(data.Dataset):
         self.label_file = label_file
         self.loader = loader
         self.transform = transform
-        self.label_map = ['reach','squat','pushup','inline',
-                          'hamstrings','lunge','deadbug','stretch']
+        self.label_map = ['reach','squat','inline','lunge','hamstrings','stretch','deadbug','pushup']
         self.data= pd.read_csv(self.label_file,header=None)
 
     def __len__(self):

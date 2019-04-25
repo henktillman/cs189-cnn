@@ -37,24 +37,25 @@ def default_loader(path):
         return pil_loader(path)
 
 # flag for whether you're training or not
-is_train = True
-is_key_frame = True # TODO: set this to false to train on the video frames, instead of the key frames
-model_to_load = 'model.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
+is_train = False
+is_key_frame = False # TODO: set this to false to train on the video frames, instead of the key frames
+model_to_load = 'alex2.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
 
 # CUDA for PyTorch
 use_cuda = torch.cuda.is_available()
+print("use_cuda", use_cuda)
 device = torch.device("cuda:0" if use_cuda else "cpu")
 #cudnn.benchmark = True
 
 # Parameters for data loader
-params = {'batch_size': 512,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
+params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True,
           'num_workers': 2
           }
 
 # TODO: Hyper-parameters
-num_epochs = 4
-learning_rate = 1e-3
+num_epochs = 5
+learning_rate = 1e-4
 # NOTE: depending on your optimizer, you may want to tune other hyperparameters as well
 
 # Datasets
@@ -84,6 +85,7 @@ else:
 train_dataset = Mds189(label_file_train,loader=default_loader,transform=transforms.Compose([
 #                                                transforms.Pad(requires_parameters),    # TODO: if you want to pad your images
 #                                                transforms.Resize(requires_parameters), # TODO: if you want to resize your images
+                                               transforms.RandomAffine((-30, 30), shear=(-10, 10), fillcolor=0),
                                                transforms.ToTensor(),
                                                transforms.Normalize(mean, std)
                                            ]))
@@ -160,7 +162,7 @@ model = NeuralNet().to(device)
 # if we're only testing, we don't want to train for any epochs, and we want to load a model
 if not is_train:
     num_epochs = 0
-    model.load_state_dict(torch.load('alexnet.ckpt'))
+    model.load_state_dict(torch.load(model_to_load))
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss() #TODO: define your loss here. hint: should just require calling a built-in pytorch layer.
@@ -211,7 +213,7 @@ with torch.no_grad():
     total = 0
     predicted_list = []
     groundtruth_list = []
-    for (local_batch,local_labels) in test_loader:
+    for (local_batch,local_labels) in val_loader:
         # Transfer to GPU
         local_ims, local_labels = local_batch.to(device), local_labels.to(device)
 
@@ -242,4 +244,5 @@ if not is_key_frame:
     pass
 
 # Save the model checkpoint
-torch.save(model.state_dict(), 'model.ckpt')
+if not is_train:
+    torch.save(model.state_dict(), 'model.ckpt')
