@@ -169,6 +169,9 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train the model
 # Loop over epochs
+loss_data_list = []
+val_data_list = []
+highest_acc = 0
 print('Beginning training..')
 total_step = len(train_loader)
 for epoch in range(num_epochs):
@@ -186,7 +189,7 @@ for epoch in range(num_epochs):
         # NOTE: if you use Google Colab's tensorboard-like feature to visualize
         #       the loss, you do not need to plot it here. just take a screenshot
         #       of the loss curve and include it in your write-up.
-        pdb.set_trace()
+        loss_data_list.append(loss.item())
 
         # Backward and optimize
         optimizer.zero_grad()
@@ -198,6 +201,32 @@ for epoch in range(num_epochs):
                    .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
             # if i > 16:
             #     break
+    # validate, check against previous accuracy. If it is better, thenn save this model.
+    pdb.set_trace()
+    with torch.no_grad():
+        correct = 0
+        total = 0
+        predicted_list = []
+        groundtruth_list = []
+        for (local_batch,local_labels) in val_loader:
+            # Transfer to GPU
+            local_ims, local_labels = local_batch.to(device), local_labels.to(device)
+
+            outputs = model.forward(local_ims)
+            _, predicted = torch.max(outputs.data, 1)
+            total += local_labels.size(0)
+            predicted_list.extend(predicted)
+            groundtruth_list.extend(local_labels)
+            correct += (predicted == local_labels).sum().item()
+
+        print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
+        pdb.set_trace()
+        acc = correct / total
+        val_data_list.append(acc)
+        if acc > highest_acc:
+            print('improvement')
+            highest_acc = acc
+            torch.save(model.state_dict(), 'ratchet.ckpt')
 
 end = time.time()
 print('Time: {}'.format(end - start))
