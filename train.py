@@ -37,9 +37,9 @@ def default_loader(path):
         return pil_loader(path)
 
 # flag for whether you're training or not
-is_train = True
+is_train = False
 is_key_frame = False # TODO: set this to false to train on the video frames, instead of the key frames
-model_to_load = 'alex2.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
+model_to_load = 'best_alex.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
 
 # CUDA for PyTorch
 use_cuda = torch.cuda.is_available()
@@ -49,7 +49,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 
 # Parameters for data loader
 params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
-          'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
+          'shuffle': False, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
           'num_workers': 2
           }
 
@@ -107,6 +107,7 @@ if not is_key_frame:
                                                    transforms.ToTensor(),
                                                    transforms.Normalize(mean, std)
                                                ]))
+    params['shuffle'] = False
     test_loader = data.DataLoader(test_dataset, **params)
 
 # TODO: one way of defining your model architecture is to fill in a class like NeuralNet()
@@ -272,8 +273,19 @@ for id in range(len(label_map)):
 
 # TODO: you'll need to run the forward pass on the kaggle competition images, and save those results to a csv file.
 if not is_key_frame:
-    # your code goes here!
+    with torch.no_grad():
+        predicted_list = []
+        for (local_batch,local_labels) in val_loader:
+            # Transfer to GPU
+            local_ims, local_labels = local_batch.to(device), local_labels.to(device)
+
+            outputs = model.forward(local_ims)
+            _, predicted = torch.max(outputs.data, 1)
+            predicted_list.extend(predicted)
+    pdb.set_trace()
     pass
+
+
 
 # Save the model checkpoint
 if is_train:
