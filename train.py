@@ -240,29 +240,29 @@ print('Time: {}'.format(end - start))
 
 # Test the model
 # In test phase, we don't need to compute gradients (for memory efficiency)
-print('Beginning Testing..')
-with torch.no_grad():
-    correct = 0
-    total = 0
-    predicted_list = []
-    groundtruth_list = []
-    for (local_batch,local_labels) in val_loader:
-        # Transfer to GPU
-        local_ims, local_labels = local_batch.to(device), local_labels.to(device)
+# print('Beginning Testing..')
+# with torch.no_grad():
+#     correct = 0
+#     total = 0
+#     predicted_list = []
+#     groundtruth_list = []
+#     for (local_batch,local_labels) in val_loader:
+#         # Transfer to GPU
+#         local_ims, local_labels = local_batch.to(device), local_labels.to(device)
 
-        outputs = model.forward(local_ims)
-        _, predicted = torch.max(outputs.data, 1)
-        total += local_labels.size(0)
-        predicted_list.extend(predicted)
-        groundtruth_list.extend(local_labels)
-        correct += (predicted == local_labels).sum().item()
+#         outputs = model.forward(local_ims)
+#         _, predicted = torch.max(outputs.data, 1)
+#         total += local_labels.size(0)
+#         predicted_list.extend(predicted)
+#         groundtruth_list.extend(local_labels)
+#         correct += (predicted == local_labels).sum().item()
 
-    print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
+#     print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
 
-# Look at some things about the model results..
-# convert the predicted_list and groundtruth_list Tensors to lists
-pl = [p.cpu().numpy().tolist() for p in predicted_list]
-gt = [p.cpu().numpy().tolist() for p in groundtruth_list]
+# # Look at some things about the model results..
+# # convert the predicted_list and groundtruth_list Tensors to lists
+# pl = [p.cpu().numpy().tolist() for p in predicted_list]
+# gt = [p.cpu().numpy().tolist() for p in groundtruth_list]
 
 # TODO: use pl and gt to produce your confusion matrices
 
@@ -275,15 +275,17 @@ for id in range(len(label_map)):
 if not is_key_frame:
     with torch.no_grad():
         predicted_list = []
-        for (local_batch,local_labels) in val_loader:
+        for (local_batch,local_labels) in test_loader:
             # Transfer to GPU
             local_ims, local_labels = local_batch.to(device), local_labels.to(device)
 
             outputs = model.forward(local_ims)
             _, predicted = torch.max(outputs.data, 1)
             predicted_list.extend(predicted)
-    pdb.set_trace()
-    pass
+    pl = [p.cpu().numpy().tolist() for p in predicted_list]
+    with open('submission.csv', 'w') as f:
+        for i in range(len(pl)):
+            f.write("%04d.jpg,%s\n" % (i, label_map[pl[i]]))
 
 
 
