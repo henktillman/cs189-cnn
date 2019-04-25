@@ -284,6 +284,7 @@ if not is_key_frame:
             predicted_list.extend(predicted)
     pl = [p.cpu().numpy().tolist() for p in predicted_list]
     with open('submission.csv', 'w') as f:
+        f.write("Id,Category\n")
         for i in range(len(pl)):
             f.write("%04d.jpg,%s\n" % (i, label_map[pl[i]]))
 
