@@ -127,14 +127,14 @@ class NeuralNet(nn.Module):
                 nn.MaxPool2d(kernel_size=3, stride=2),
                 nn.Conv2d(64, 192, kernel_size=5, padding=2),
                 nn.ReLU(inplace=True),
-                nn.MaxPool2d(kernel_size=3, stride=2),
+                nn.AvgPool2d(kernel_size=3, stride=2),
                 nn.Conv2d(192, 384, kernel_size=3, padding=1),
                 nn.ReLU(inplace=True),
                 nn.Conv2d(384, 256, kernel_size=3, padding=1),
                 nn.ReLU(inplace=True),
                 nn.Conv2d(256, 256, kernel_size=3, padding=1),
                 nn.ReLU(inplace=True),
-                nn.MaxPool2d(kernel_size=3, stride=2),
+                nn.AvgPool2d(kernel_size=3, stride=2),
                 )
         self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
         self.classifier = nn.Sequential(
@@ -144,7 +144,10 @@ class NeuralNet(nn.Module):
                 nn.Dropout(),
                 nn.Linear(4096, 2048),
                 nn.ReLU(inplace=True),
-                nn.Linear(2048, num_classes),
+                nn.Dropout(),
+                nn.Linear(2048, 1024),
+                nn.ReLU(inplace=True)
+                nn.Linear(1024, num_classes),
                 )
     def forward(self, x):
         x = self.features(x)
