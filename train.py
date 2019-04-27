@@ -131,7 +131,7 @@ class NeuralNet(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
         self.drop_out = nn.Dropout()
-        self.fc1 = nn.Linear(125440, 200)
+        self.fc1 = nn.Linear(62720, 200)
         self.fc2 = nn.Linear(200, 8)
 
     def forward(self, x):
