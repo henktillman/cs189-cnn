@@ -269,7 +269,7 @@ print('Time: {}'.format(end - start))
 # # TODO: use pl and gt to produce your confusion matrices
 
 # # view the per-movement accuracy
-# label_map = ['reach','squat','inline','lunge','hamstrings','stretch','deadbug','pushup']
+label_map = ['reach','squat','inline','lunge','hamstrings','stretch','deadbug','pushup']
 # for id in range(len(label_map)):
 #     print('{}: {}'.format(label_map[id],sum([p and g for (p,g) in zip(np.array(pl)==np.array(gt),np.array(gt)==id)])/(sum(np.array(gt)==id)+0.)))
 
