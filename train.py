@@ -50,7 +50,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 # Parameters for data loader
 params = {'batch_size': 32,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
-          'num_workers': 2
+          'num_workers': 0
           }
 
 # TODO: Hyper-parameters
@@ -123,18 +123,18 @@ class NeuralNet(nn.Module):
     def __init__(self):
         super(NeuralNet, self).__init__()
         self.classifier = nn.Sequential(
-            nn.Linear(448*224*3, 4096),
+            nn.Linear(448*224*3, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(4096, 4096),
+            nn.Linear(1024, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(4096, 4096),
+            nn.Linear(1024, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(4096, 4096),
+            nn.Linear(1024, 1024),
             nn.ReLU(inplace=True),
-            nn.Linear(4096, num_classes),
+            nn.Linear(1024, num_classes),
         )
 
     def forward(self, x):
