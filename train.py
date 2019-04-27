@@ -48,7 +48,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 #cudnn.benchmark = True
 
 # Parameters for data loader
-params = {'batch_size': 32,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
+params = {'batch_size': 16,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
           'num_workers': 2
           }
@@ -126,15 +126,15 @@ class NeuralNet(nn.Module):
             nn.Linear(448*224*3, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(1024, 1024),
+            nn.Linear(1024, 512),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(1024, 1024),
+            nn.Linear(512, 256),
             nn.ReLU(inplace=True),
             nn.Dropout(),
-            nn.Linear(1024, 1024),
+            nn.Linear(256, 128),
             nn.ReLU(inplace=True),
-            nn.Linear(1024, num_classes),
+            nn.Linear(128, num_classes),
         )
 
     def forward(self, x):
@@ -201,6 +201,8 @@ for epoch in range(num_epochs):
             local_ims, local_labels = local_batch.to(device), local_labels.to(device)
 
             outputs = model.forward(local_ims)
+            loss = criterion(outputs, local_labels)
+            val_data_list.append(loss)
             _, predicted = torch.max(outputs.data, 1)
             total += local_labels.size(0)
             predicted_list.extend(predicted)
@@ -209,7 +211,6 @@ for epoch in range(num_epochs):
 
         print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
         acc = correct / total
-        val_data_list.append(acc)
         if acc > highest_acc:
             print('improvement')
             highest_acc = acc
