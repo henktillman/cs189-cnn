@@ -215,7 +215,7 @@ for epoch in range(num_epochs):
 
             outputs = model.forward(local_ims)
             loss = criterion(outputs, local_labels)
-            val_data_list.append(loss)
+            val_data_list.append(loss.item())
             _, predicted = torch.max(outputs.data, 1)
             total += local_labels.size(0)
             predicted_list.extend(predicted)
