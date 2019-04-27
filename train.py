@@ -123,7 +123,7 @@ class NeuralNet(nn.Module):
     def __init__(self):
         super(NeuralNet, self).__init__()
         self.classifier = nn.Sequential(
-            nn.Linear(256 * 6 * 6, 4096),
+            nn.Linear(448*224*3, 4096),
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(4096, 4096),
@@ -144,7 +144,7 @@ class NeuralNet(nn.Module):
         )
 
     def forward(self, x):
-        x = x.view(x.size(0), 256 * 6 * 6)
+        x = x.view(-1, 448*224*3)
         x = self.classifier(x)
         return x
 
