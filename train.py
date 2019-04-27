@@ -144,6 +144,7 @@ class NeuralNet(nn.Module):
         )
 
     def forward(self, x):
+        pdb.set_trace()
         x = x.view(-1, 448*224*3)
         x = self.classifier(x)
         return x
