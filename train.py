@@ -85,7 +85,7 @@ else:
 train_dataset = Mds189(label_file_train,loader=default_loader,transform=transforms.Compose([
 #                                                transforms.Pad(requires_parameters),    # TODO: if you want to pad your images
 #                                                transforms.Resize(requires_parameters), # TODO: if you want to resize your images
-                                               transforms.RandomAffine((-30, 30), shear=(-10, 10), fillcolor=0),
+                                               # transforms.RandomAffine((-30, 30), shear=(-10, 10), fillcolor=0),
                                                transforms.ToTensor(),
                                                transforms.Normalize(mean, std)
                                            ]))
@@ -125,13 +125,10 @@ class NeuralNet(nn.Module):
         self.classifier = nn.Sequential(
             nn.Linear(448*224*3, 1024),
             nn.ReLU(inplace=True),
-            nn.Dropout(),
             nn.Linear(1024, 512),
             nn.ReLU(inplace=True),
-            nn.Dropout(),
             nn.Linear(512, 256),
             nn.ReLU(inplace=True),
-            nn.Dropout(),
             nn.Linear(256, 128),
             nn.ReLU(inplace=True),
             nn.Linear(128, num_classes),
