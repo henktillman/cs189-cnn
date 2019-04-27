@@ -48,7 +48,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 #cudnn.benchmark = True
 
 # Parameters for data loader
-params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
+params = {'batch_size': 32,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
           'num_workers': 2
           }
@@ -144,7 +144,6 @@ class NeuralNet(nn.Module):
         )
 
     def forward(self, x):
-        pdb.set_trace()
         x = x.view(-1, 448*224*3)
         x = self.classifier(x)
         return x
