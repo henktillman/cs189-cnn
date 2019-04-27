@@ -50,7 +50,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 # Parameters for data loader
 params = {'batch_size': 32,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
-          'num_workers': 0
+          'num_workers': 2
           }
 
 # TODO: Hyper-parameters
