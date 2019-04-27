@@ -122,22 +122,26 @@ num_classes = 8
 class NeuralNet(nn.Module):
     def __init__(self):
         super(NeuralNet, self).__init__()
-        self.classifier = nn.Sequential(
-            nn.Linear(448*224*3, 1024),
-            nn.ReLU(inplace=True),
-            nn.Linear(1024, 512),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 256),
-            nn.ReLU(inplace=True),
-            nn.Linear(256, 128),
-            nn.ReLU(inplace=True),
-            nn.Linear(128, num_classes),
-        )
+        self.layer1 = nn.Sequential(
+            nn.Conv2d(3, 5, kernel_size=5, stride=1, padding=2),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.layer2 = nn.Sequential(
+            nn.Conv2d(5, 10, kernel_size=5, stride=1, padding=2),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.drop_out = nn.Dropout()
+        self.fc1 = nn.Linear(125440, 200)
+        self.fc2 = nn.Linear(200, 8)
 
     def forward(self, x):
-        x = x.view(-1, 448*224*3)
-        x = self.classifier(x)
-        return x
+        out = self.layer1(x)
+        out = self.layer2(out)
+        out = out.reshape(out.size(0), -1)
+        out = self.drop_out(out)
+        out = self.fc1(out)
+        out = self.fc2(out)
+        return out
 
 
 model = NeuralNet().to(device)
