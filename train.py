@@ -39,7 +39,7 @@ def default_loader(path):
 
 # flag for whether you're training or not
 is_train = True
-is_key_frame = True # TODO: set this to false to train on the video frames, instead of the key frames
+is_key_frame = False # TODO: set this to false to train on the video frames, instead of the key frames
 model_to_load = 'final.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
 
 # CUDA for PyTorch
@@ -49,13 +49,13 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 #cudnn.benchmark = True
 
 # Parameters for data loader
-params = {'batch_size': 16,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
+params = {'batch_size': 128,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
           'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
           'num_workers': 2
           }
 
 # TODO: Hyper-parameters
-num_epochs = 10
+num_epochs = 4
 learning_rate = 1e-4
 # NOTE: depending on your optimizer, you may want to tune other hyperparameters as well
 
