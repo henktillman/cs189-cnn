@@ -38,7 +38,7 @@ def default_loader(path):
 
 # flag for whether you're training or not
 is_train = True
-is_key_frame = True # TODO: set this to false to train on the video frames, instead of the key frames
+is_key_frame = False # TODO: set this to false to train on the video frames, instead of the key frames
 model_to_load = 'final.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
 
 # CUDA for PyTorch
@@ -139,10 +139,10 @@ class NeuralNet(nn.Module):
         )
         self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
         self.classifier = nn.Sequential(
-            nn.BatchNorm1d(9216),
+            nn.Dropout(),
             nn.Linear(256 * 6 * 6, 4096),
             nn.ReLU(inplace=True),
-            nn.BatchNorm1d(4096),
+            nn.Dropout(),
             nn.Linear(4096, 4096),
             nn.ReLU(inplace=True),
             nn.Linear(4096, num_classes),
