@@ -37,8 +37,8 @@ def default_loader(path):
         return pil_loader(path)
 
 # flag for whether you're training or not
-is_train = False
-is_key_frame = False # TODO: set this to false to train on the video frames, instead of the key frames
+is_train = True
+is_key_frame = True # TODO: set this to false to train on the video frames, instead of the key frames
 model_to_load = 'final.ckpt' # This is the model to load during testing, if you want to eval a previously-trained model.
 
 # CUDA for PyTorch
@@ -49,12 +49,12 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 
 # Parameters for data loader
 params = {'batch_size': 16,  # TODO: fill in the batch size. often, these are things like 32,64,128,or 256
-          'shuffle': False, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
+          'shuffle': True, # MAKE SURE TO CHANGE THIS BEFORE KAGGLE SUBMISSION
           'num_workers': 2
           }
 
 # TODO: Hyper-parameters
-num_epochs = 20
+num_epochs = 10
 learning_rate = 1e-4
 # NOTE: depending on your optimizer, you may want to tune other hyperparameters as well
 
@@ -242,36 +242,36 @@ print('Time: {}'.format(end - start))
 
 # Test the model
 # In test phase, we don't need to compute gradients (for memory efficiency)
-# print('Beginning Testing..')
-# with torch.no_grad():
-#     correct = 0
-#     total = 0
-#     predicted_list = []
-#     groundtruth_list = []
-#     for (local_batch,local_labels) in val_loader:
-#         # Transfer to GPU
-#         local_ims, local_labels = local_batch.to(device), local_labels.to(device)
+print('Beginning Testing..')
+with torch.no_grad():
+    correct = 0
+    total = 0
+    predicted_list = []
+    groundtruth_list = []
+    for (local_batch,local_labels) in val_loader:
+        # Transfer to GPU
+        local_ims, local_labels = local_batch.to(device), local_labels.to(device)
 
-#         outputs = model.forward(local_ims)
-#         _, predicted = torch.max(outputs.data, 1)
-#         total += local_labels.size(0)
-#         predicted_list.extend(predicted)
-#         groundtruth_list.extend(local_labels)
-#         correct += (predicted == local_labels).sum().item()
+        outputs = model.forward(local_ims)
+        _, predicted = torch.max(outputs.data, 1)
+        total += local_labels.size(0)
+        predicted_list.extend(predicted)
+        groundtruth_list.extend(local_labels)
+        correct += (predicted == local_labels).sum().item()
 
-#     print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
+    print('Accuracy of the network on the {} test images: {} %'.format(total, 100 * correct / total))
 
-# # Look at some things about the model results..
-# # convert the predicted_list and groundtruth_list Tensors to lists
-# pl = [p.cpu().numpy().tolist() for p in predicted_list]
-# gt = [p.cpu().numpy().tolist() for p in groundtruth_list]
+# Look at some things about the model results..
+# convert the predicted_list and groundtruth_list Tensors to lists
+pl = [p.cpu().numpy().tolist() for p in predicted_list]
+gt = [p.cpu().numpy().tolist() for p in groundtruth_list]
 
 # # TODO: use pl and gt to produce your confusion matrices
 
 # # view the per-movement accuracy
 label_map = ['reach','squat','inline','lunge','hamstrings','stretch','deadbug','pushup']
-# for id in range(len(label_map)):
-#     print('{}: {}'.format(label_map[id],sum([p and g for (p,g) in zip(np.array(pl)==np.array(gt),np.array(gt)==id)])/(sum(np.array(gt)==id)+0.)))
+for id in range(len(label_map)):
+    print('{}: {}'.format(label_map[id],sum([p and g for (p,g) in zip(np.array(pl)==np.array(gt),np.array(gt)==id)])/(sum(np.array(gt)==id)+0.)))
 
 # TODO: you'll need to run the forward pass on the kaggle competition images, and save those results to a csv file.
 if not is_key_frame:
