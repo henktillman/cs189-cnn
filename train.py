@@ -12,6 +12,7 @@ import torchvision.models as models
 from PIL import Image
 import time
 import pdb
+from sklearn import metrics
 start = time.time()
 
 # Helper functions for loading images.
@@ -266,7 +267,11 @@ with torch.no_grad():
 pl = [p.cpu().numpy().tolist() for p in predicted_list]
 gt = [p.cpu().numpy().tolist() for p in groundtruth_list]
 
+print(pl)
+print(gt)
 # # TODO: use pl and gt to produce your confusion matrices
+conf = metrics.confusion_matrix(gt, pl)
+print(conf)
 
 # # view the per-movement accuracy
 label_map = ['reach','squat','inline','lunge','hamstrings','stretch','deadbug','pushup']
