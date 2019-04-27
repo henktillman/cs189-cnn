@@ -139,10 +139,10 @@ class NeuralNet(nn.Module):
         )
         self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
         self.classifier = nn.Sequential(
-            nn.BatchNorm1d(50),
+            nn.BatchNorm1d(9216),
             nn.Linear(256 * 6 * 6, 4096),
             nn.ReLU(inplace=True),
-            nn.BatchNorm1d(50),
+            nn.BatchNorm1d(4096),
             nn.Linear(4096, 4096),
             nn.ReLU(inplace=True),
             nn.Linear(4096, num_classes),
